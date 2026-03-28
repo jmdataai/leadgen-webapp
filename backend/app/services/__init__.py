@@ -12,5 +12,5 @@ __all__ = [
     'OpenAIService',
     'GmailService',
     'LeadScraper',
-    'JobProcessor'
+    'JobProcessor',
 ]

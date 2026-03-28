@@ -2,7 +2,7 @@ name: Sync Backend to HuggingFace Space
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
     paths:
       - 'backend/**'
 
@@ -13,7 +13,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          lfs: true
 
       - name: Push backend to HuggingFace Space
         env:
@@ -21,14 +20,11 @@ jobs:
         run: |
           git config --global user.email "ci@github.com"
           git config --global user.name "GitHub Actions"
-          
-          # Create a temp directory with only backend files
           mkdir /tmp/hf_deploy
           cp -r backend/. /tmp/hf_deploy/
           cd /tmp/hf_deploy
-          
           git init
-          git checkout -b main
+          git checkout -b develop
           git add .
           git commit -m "deploy: $(date +'%Y-%m-%d %H:%M:%S')"
           git remote add hfspace https://freddy-jmdataai:$HF_TOKEN@huggingface.co/spaces/freddy-jmdataai/leadgen-api

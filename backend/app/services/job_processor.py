@@ -10,7 +10,7 @@ from typing import Dict, List
 from app.core.database import SessionLocal, Job
 from app.services.apify_service import ApifyService
 from app.services.openai_service import OpenAIService
-from app.services.gmail_service import GmailService
+from app.services.email_service import EmailService as GmailService
 from app.services.lead_scraper import LeadScraper
 
 logger = logging.getLogger(__name__)

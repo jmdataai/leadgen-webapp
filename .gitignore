@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+env/
+.venv/
+
+# Environment files — NEVER push
+.env
+*.env
+.env.local
+.env.production
+
+# Database — NEVER push
+*.db
+*.sqlite3
+backend/data/
+
+# Frontend dependencies — too large
+frontend/node_modules/
+frontend/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*

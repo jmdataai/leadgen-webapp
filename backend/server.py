@@ -1,25 +1,36 @@
 """
 AI Lead Generator - FastAPI Backend
-Production-ready lead generation system
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 import os
+import logging
 
-from app.core.database import engine, Base
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+from app.core.database import init_db
 from app.api.endpoints import auth, leads
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    logger.info("Starting LeadGen AI API...")
+    init_db()
+    logger.info("LeadGen AI API ready!")
+    yield
+    # Shutdown
+    logger.info("Shutting down...")
 
-# Initialize FastAPI app
 app = FastAPI(
     title="AI Lead Generator",
     description="Intelligent lead generation system powered by AI",
-    version="2.0.0"
+    version="2.0.0",
+    lifespan=lifespan
 )
 
-# CORS Configuration
+# CORS
 CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*")
 origins = CORS_ORIGINS.split(",") if CORS_ORIGINS != "*" else ["*"]
 
@@ -31,24 +42,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(leads.router, prefix="/api/leads", tags=["Leads"])
 
-# Root endpoint
 @app.get("/")
 async def root():
-    """Root endpoint"""
     return {
         "message": "AI Lead Generator API",
         "version": "2.0.0",
         "status": "running"
     }
 
-# Health check
 @app.get("/api/health")
 async def health_check():
-    """Health check endpoint"""
     return {
         "status": "healthy",
         "service": "AI Lead Generator",
@@ -57,18 +63,9 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    
-    print("\n" + "="*60)
-    print("🚀 AI LEAD GENERATOR - Starting Server")
-    print("="*60)
-    print(f"📍 Environment: {os.getenv('ENVIRONMENT', 'development')}")
-    print(f"🌐 URL: http://localhost:8001")
-    print(f"📚 API Docs: http://localhost:8001/docs")
-    print("="*60 + "\n")
-    
     uvicorn.run(
         "server:app",
         host="0.0.0.0",
-        port=8080,
-        reload=True
+        port=7860,
+        reload=False
     )
